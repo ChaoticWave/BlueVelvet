@@ -1,0 +1,43 @@
+{
+    "name":         "ChaoticWave/BlueVelvet",
+    "description":  "Laravel-Friendly PHP Utility Library",
+    "authors":      [
+        {
+            "name":  "Jerry Ablan",
+            "email": "jerryablan@gmail.com"
+        }
+    ],
+    "keywords":     [
+        "utility",
+        "laravel"
+    ],
+    "license":      "MIT",
+    "type":         "library",
+    "require":      {
+        "php":                         ">=5.5.9",
+        "barryvdh/laravel-ide-helper": "^2.2",
+        "vlucas/phpdotenv":            "~2.2",
+        "graham-campbell/flysystem":   "^3.0",
+        "laravel/lumen-framework":     "5.2.*"
+    },
+    "require-dev":  {
+        "fzaninotto/faker": "~1.4",
+        "phpunit/phpunit":  "~4.0"
+    },
+    "autoload":     {
+        "psr-4": {
+            "ChaoticWave\\BlueVelvet\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/",
+            "database/"
+        ]
+    },
+    "extra":        {
+        "branch-alias": {
+            "dev-develop": "1.x-dev"
+        }
+    }
+}
