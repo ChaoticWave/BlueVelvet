@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c490cc769c7d59eb34fb911ca385626c",
-    "content-hash": "9c597450a22c14d0d436922ace14ee1a",
+    "hash": "0f8c56b0f2f17adb63465c66e7827ce5",
+    "content-hash": "747f64fe332a2bd7655eab17b5453b0c",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -188,6 +188,154 @@
                 "string"
             ],
             "time": "2015-11-06 14:35:42"
+        },
+        {
+            "name": "graham-campbell/flysystem",
+            "version": "v3.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GrahamCampbell/Laravel-Flysystem.git",
+                "reference": "a3d69206a67ce1b68e867dbc0ea30a88c5992b40"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GrahamCampbell/Laravel-Flysystem/zipball/a3d69206a67ce1b68e867dbc0ea30a88c5992b40",
+                "reference": "a3d69206a67ce1b68e867dbc0ea30a88c5992b40",
+                "shasum": ""
+            },
+            "require": {
+                "graham-campbell/manager": "^2.3",
+                "illuminate/cache": "5.1.*|5.2.*|5.3.*",
+                "illuminate/contracts": "5.1.*|5.2.*|5.3.*",
+                "illuminate/support": "5.1.*|5.2.*|5.3.*",
+                "league/flysystem": "^1.0",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "graham-campbell/testbench": "^3.1",
+                "league/flysystem-aws-s3-v3": "^1.0",
+                "league/flysystem-azure": "^1.0",
+                "league/flysystem-cached-adapter": "^1.0",
+                "league/flysystem-copy": "^1.0",
+                "league/flysystem-dropbox": "^1.0",
+                "league/flysystem-eventable-filesystem": "^1.0",
+                "league/flysystem-gridfs": "^1.0",
+                "league/flysystem-rackspace": "^1.0",
+                "league/flysystem-sftp": "^1.0",
+                "league/flysystem-webdav": "^1.0",
+                "league/flysystem-ziparchive": "^1.0",
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "^4.8|^5.0"
+            },
+            "suggest": {
+                "league/flysystem-aws-s3-v3": "AwsS3 adapter support.",
+                "league/flysystem-azure": "Azure adapter support.",
+                "league/flysystem-cached-adapter": "Adapter caching support.",
+                "league/flysystem-copy": "Copy adapter support.",
+                "league/flysystem-dropbox": "Dropbox adapter support.",
+                "league/flysystem-eventable-filesystem": "Eventable filesystem support.",
+                "league/flysystem-gridfs": "GridFS adapter support.",
+                "league/flysystem-rackspace": "Rackspace adapter support.",
+                "league/flysystem-replicate-adapter": "Replicate adapter support.",
+                "league/flysystem-sftp": "Sftp adapter support.",
+                "league/flysystem-webdav": "WebDav adapter support.",
+                "league/flysystem-ziparchive": "ZipArchive adapter support."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GrahamCampbell\\Flysystem\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Graham Campbell",
+                    "email": "graham@alt-three.com"
+                }
+            ],
+            "description": "Flysystem Is A Flysystem Bridge For Laravel 5",
+            "keywords": [
+                "Flysystem",
+                "Graham Campbell",
+                "GrahamCampbell",
+                "Laravel Flysystem",
+                "Laravel-Flysystem",
+                "aws",
+                "dropbox",
+                "files",
+                "framework",
+                "laravel",
+                "s3"
+            ],
+            "time": "2016-08-28 09:18:27"
+        },
+        {
+            "name": "graham-campbell/manager",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GrahamCampbell/Laravel-Manager.git",
+                "reference": "fd9052082e2c69c9a67d3e8d7dfa94cb33f8ab0b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GrahamCampbell/Laravel-Manager/zipball/fd9052082e2c69c9a67d3e8d7dfa94cb33f8ab0b",
+                "reference": "fd9052082e2c69c9a67d3e8d7dfa94cb33f8ab0b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "5.1.*|5.2.*|5.3.*",
+                "illuminate/support": "5.1.*|5.2.*|5.3.*",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "graham-campbell/testbench-core": "^1.1",
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "^4.8|^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GrahamCampbell\\Manager\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Graham Campbell",
+                    "email": "graham@alt-three.com"
+                }
+            ],
+            "description": "Manager Provides Some Manager Functionality For Laravel 5",
+            "keywords": [
+                "Graham Campbell",
+                "GrahamCampbell",
+                "Laravel Manager",
+                "Laravel-Manager",
+                "connector",
+                "framework",
+                "interface",
+                "laravel",
+                "manager"
+            ],
+            "time": "2016-04-26 14:27:59"
         },
         {
             "name": "illuminate/auth",
@@ -1335,6 +1483,89 @@
                 "lumen"
             ],
             "time": "2016-08-01 14:48:25"
+        },
+        {
+            "name": "league/flysystem",
+            "version": "1.0.27",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem.git",
+                "reference": "50e2045ed70a7e75a5e30bc3662904f3b67af8a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/50e2045ed70a7e75a5e30bc3662904f3b67af8a9",
+                "reference": "50e2045ed70a7e75a5e30bc3662904f3b67af8a9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "conflict": {
+                "league/flysystem-sftp": "<1.0.6"
+            },
+            "require-dev": {
+                "ext-fileinfo": "*",
+                "mockery/mockery": "~0.9",
+                "phpspec/phpspec": "^2.2",
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "ext-fileinfo": "Required for MimeType",
+                "league/flysystem-aws-s3-v2": "Allows you to use S3 storage with AWS SDK v2",
+                "league/flysystem-aws-s3-v3": "Allows you to use S3 storage with AWS SDK v3",
+                "league/flysystem-azure": "Allows you to use Windows Azure Blob storage",
+                "league/flysystem-cached-adapter": "Flysystem adapter decorator for metadata caching",
+                "league/flysystem-copy": "Allows you to use Copy.com storage",
+                "league/flysystem-dropbox": "Allows you to use Dropbox storage",
+                "league/flysystem-eventable-filesystem": "Allows you to use EventableFilesystem",
+                "league/flysystem-rackspace": "Allows you to use Rackspace Cloud Files",
+                "league/flysystem-sftp": "Allows you to use SFTP server storage via phpseclib",
+                "league/flysystem-webdav": "Allows you to use WebDAV storage",
+                "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+                }
+            ],
+            "description": "Filesystem abstraction: Many filesystems, one API.",
+            "keywords": [
+                "Cloud Files",
+                "WebDAV",
+                "abstraction",
+                "aws",
+                "cloud",
+                "copy.com",
+                "dropbox",
+                "file systems",
+                "files",
+                "filesystem",
+                "filesystems",
+                "ftp",
+                "rackspace",
+                "remote",
+                "s3",
+                "sftp",
+                "storage"
+            ],
+            "time": "2016-08-10 08:55:11"
         },
         {
             "name": "monolog/monolog",
