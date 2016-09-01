@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Builder;
 
 /**
- * Base class for all models
+ * Base class for Laravel/Eloquent models
  *
  * @method static Builder|EloquentBuilder where($column, $operator = null, $value = null, $boolean = 'and')
  * @method static Builder|EloquentBuilder whereRaw($clause, $params = [])

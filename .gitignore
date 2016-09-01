@@ -1,11 +1,8 @@
 vendor/
-/node_modules
 .env
-src/skelemod/
 /storage/framework/cache/*
 /storage/framework/sessions/*
 /storage/framework/views/*
 /storage/logs/*
 /storage/app/*
-.idea/workspace.xml
-.idea/tasks.xml
+.idea/
