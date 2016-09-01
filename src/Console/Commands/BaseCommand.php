@@ -1,20 +1,16 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility\Console\Commands;
 
-use ChaoticWave\BlueVelvet\Utility\Contracts\Configurable;
 use ChaoticWave\BlueVelvet\Utility\Json;
 use ChaoticWave\BlueVelvet\Utility\Shapers\XmlShape;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Composer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Adds some additional functionality to the Command class
- *
- * @method Application getLaravel() Returns the laravel instance
  */
-abstract class BaseCommand extends Command implements Configurable
+abstract class BaseCommand extends Command
 {
     //******************************************************************************
     //* Members
