@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Traits;
+<?php namespace ChaoticWave\BlueVelvet\Traits;
 
 use Illuminate\Support\Str;
 
@@ -72,7 +72,7 @@ trait IncludeExclude
      * @param array|null  $excludes
      * @param string|null $wildcard
      *
-     * @return \ChaoticWave\BlueVelvet\Utility\Traits\IncludeExclude
+     * @return \ChaoticWave\BlueVelvet\Traits\IncludeExclude
      */
     protected function setupIncludeExclude($includes = null, $excludes = null, $wildcard = null)
     {

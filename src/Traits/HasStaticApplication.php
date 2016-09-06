@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Traits;
+<?php namespace ChaoticWave\BlueVelvet\Traits;
 
 /**
  * Provides access to the parent application. Also fulfills the ServiceLike contract
@@ -10,7 +10,7 @@ trait HasStaticApplication
     //******************************************************************************
 
     /**
-     * @var \ChaoticWave\BlueVelvet\Utility\Containers\BaseModule|\Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
+     * @var \Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
      */
     protected static $app;
 
@@ -19,7 +19,7 @@ trait HasStaticApplication
     //******************************************************************************
 
     /**
-     * @return \ChaoticWave\BlueVelvet\Utility\Containers\BaseModule|\Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
+     * @return \Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
      */
     public static function getApplication()
     {
@@ -27,7 +27,7 @@ trait HasStaticApplication
     }
 
     /**
-     * @param \ChaoticWave\BlueVelvet\Utility\Containers\BaseModule|\Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application $app
+     * @param \Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application $app
      */
     protected static function setApplication($app)
     {

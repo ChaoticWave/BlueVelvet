@@ -1,6 +1,6 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
-use ChaoticWave\BlueVelvet\Utility\Exceptions\FileException;
+use ChaoticWave\BlueVelvet\Exceptions\FileException;
 
 /**
  * Simple file roller

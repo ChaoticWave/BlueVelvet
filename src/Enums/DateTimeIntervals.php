@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Enums;
+<?php namespace ChaoticWave\BlueVelvet\Enums;
 
 /**
  * Various date and time constants

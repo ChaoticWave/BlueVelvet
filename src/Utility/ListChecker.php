@@ -1,6 +1,6 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
-use ChaoticWave\BlueVelvet\Utility\Traits\IncludeExclude;
+use ChaoticWave\BlueVelvet\Traits\IncludeExclude;
 
 /**
  * ListChecker

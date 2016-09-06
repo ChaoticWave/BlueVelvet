@@ -1,6 +1,6 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Services;
+<?php namespace ChaoticWave\BlueVelvet\Services;
 
-use ChaoticWave\BlueVelvet\Utility\Contracts\HandlesCallbacks;
+use ChaoticWave\BlueVelvet\Contracts\HandlesCallbacks;
 
 /**
  * A simple callback registrar

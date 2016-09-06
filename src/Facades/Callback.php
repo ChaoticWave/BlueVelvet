@@ -1,9 +1,9 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Facades;
+<?php namespace ChaoticWave\BlueVelvet\Facades;
 
-use ChaoticWave\BlueVelvet\Utility\Providers\CallbackServiceProvider;
+use ChaoticWave\BlueVelvet\Providers\CallbackServiceProvider;
 
 /**
- * @see \ChaoticWave\BlueVelvet\Utility\Services\CallbackService
+ * @see \ChaoticWave\BlueVelvet\Services\CallbackService
  *
  * @method static void register($id, $callback)
  * @method static array fire($id, $key = null, array $arguments = []);

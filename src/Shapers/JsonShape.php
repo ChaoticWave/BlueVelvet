@@ -1,6 +1,6 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Shapers;
+<?php namespace ChaoticWave\BlueVelvet\Shapers;
 
-use ChaoticWave\BlueVelvet\Utility\Contracts\ShapesData;
+use ChaoticWave\BlueVelvet\Contracts\ShapesData;
 use ChaoticWave\BlueVelvet\Utility\Json;
 
 class JsonShape implements ShapesData

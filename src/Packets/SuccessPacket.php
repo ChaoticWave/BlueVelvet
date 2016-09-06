@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Packets;
+<?php namespace ChaoticWave\BlueVelvet\Packets;
 
 use Illuminate\Http\Response;
 

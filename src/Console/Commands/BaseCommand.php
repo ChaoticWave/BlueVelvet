@@ -1,7 +1,7 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Console\Commands;
+<?php namespace ChaoticWave\BlueVelvet\Console\Commands;
 
 use ChaoticWave\BlueVelvet\Utility\Json;
-use ChaoticWave\BlueVelvet\Utility\Shapers\XmlShape;
+use ChaoticWave\BlueVelvet\Shapers\XmlShape;
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use Symfony\Component\Console\Input\InputInterface;
