@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Enums;
+<?php namespace ChaoticWave\BlueVelvet\Enums;
 
 use Symfony\Component\HttpFoundation\Request;
 

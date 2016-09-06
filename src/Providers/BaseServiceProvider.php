@@ -1,6 +1,6 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Providers;
+<?php namespace ChaoticWave\BlueVelvet\Providers;
 
-use ChaoticWave\BlueVelvet\Utility\Services\BaseService;
+use ChaoticWave\BlueVelvet\Services\BaseService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 

@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Exceptions;
+<?php namespace ChaoticWave\BlueVelvet\Exceptions;
 
 /**
  * Generic file system exception

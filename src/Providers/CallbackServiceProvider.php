@@ -1,6 +1,6 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Providers;
+<?php namespace ChaoticWave\BlueVelvet\Providers;
 
-use ChaoticWave\BlueVelvet\Utility\Services\CallbackService;
+use ChaoticWave\BlueVelvet\Services\CallbackService;
 
 class CallbackServiceProvider extends BaseServiceProvider
 {

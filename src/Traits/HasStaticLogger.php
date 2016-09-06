@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Traits;
+<?php namespace ChaoticWave\BlueVelvet\Traits;
 
 if (!class_exists('\AppLog', false)) {
     class_alias('Illuminate\Support\Facades\Log', '\AppLog');

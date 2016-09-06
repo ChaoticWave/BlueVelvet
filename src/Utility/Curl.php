@@ -1,6 +1,6 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
-use ChaoticWave\BlueVelvet\Utility\Enums\Verbs;
+use ChaoticWave\BlueVelvet\Enums\Verbs;
 
 /**
  * Curl

@@ -1,7 +1,7 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
-use ChaoticWave\BlueVelvet\Utility\Exceptions\FileException;
-use ChaoticWave\BlueVelvet\Utility\Exceptions\FileSystemException;
+use ChaoticWave\BlueVelvet\Exceptions\FileException;
+use ChaoticWave\BlueVelvet\Exceptions\FileSystemException;
 
 /**
  * Reads/writes a json file

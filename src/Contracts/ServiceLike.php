@@ -1,4 +1,4 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Contracts;
+<?php namespace ChaoticWave\BlueVelvet\Contracts;
 
 use Illuminate\Contracts\Foundation\Application;
 

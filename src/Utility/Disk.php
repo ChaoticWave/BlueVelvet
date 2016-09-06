@@ -1,7 +1,7 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
-use ChaoticWave\BlueVelvet\Utility\Enums\GlobFlags;
-use ChaoticWave\BlueVelvet\Utility\Exceptions\FileSystemException;
+use ChaoticWave\BlueVelvet\Enums\GlobFlags;
+use ChaoticWave\BlueVelvet\Exceptions\FileSystemException;
 
 /**
  * Down and dirty file utility class with a sprinkle of awesomeness

@@ -1,8 +1,8 @@
-<?php namespace ChaoticWave\BlueVelvet\Utility\Services;
+<?php namespace ChaoticWave\BlueVelvet\Services;
 
-use ChaoticWave\BlueVelvet\Utility\Contracts\ServiceLike;
-use ChaoticWave\BlueVelvet\Utility\Traits\HasApplication;
-use ChaoticWave\BlueVelvet\Utility\Traits\HasAppLogger;
+use ChaoticWave\BlueVelvet\Contracts\ServiceLike;
+use ChaoticWave\BlueVelvet\Traits\HasApplication;
+use ChaoticWave\BlueVelvet\Traits\HasAppLogger;
 
 /**
  * A base class for all services
