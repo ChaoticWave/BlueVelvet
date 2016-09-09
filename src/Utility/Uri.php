@@ -1,5 +1,8 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
+/**
+ * HTTP URL/URI helpers
+ */
 class Uri
 {
     //******************************************************************************
@@ -11,6 +14,7 @@ class Uri
      * @param bool   $normalize If true, uri will be normalized to a string
      *
      * @return array|string
+     * @todo support query string parameters
      */
     public static function parse($uri, $normalize = false)
     {
@@ -115,5 +119,76 @@ class Uri
     public static function segment($parts = [], $leading = true, $separator = '/')
     {
         return Disk::segment($parts, $leading, $separator);
+    }
+
+    /**
+     * Add a query string to ANY url
+     *
+     * @param string       $url   The URI to adjust
+     * @param string|array $key   The query parameter key or an array of key/value pairs
+     * @param mixed|null   $value The query parameter value
+     *
+     * @return string The url with the parameter added to the end
+     */
+    public static function addUrlParameter($url, $key, $value = null)
+    {
+        list($_url, $_params) = static::splitUrl($url);
+
+        if (!is_array($key)) {
+            $key = [$key => $value];
+        }
+
+        $_query = null;
+
+        foreach ($key as $_key => $_value) {
+            $_query[] = $_key . '=' . $_value;
+        }
+
+        return $_url . ($_query ? '?' . implode('&', $_query) : null);
+    }
+
+    /**
+     * Splits an url into the address and query string portions
+     *
+     * @param string $url
+     *
+     * @return array An array of $url and $pairs [ 0 => 'url', 1 => [ 'key1' => 'value1', ...] ]
+     */
+    public static function splitUrl($url)
+    {
+        if (false === ($_pos = strpos($url, '?'))) {
+            return [$url, []];
+        }
+
+        $_parts = explode('?', $url);
+
+        if (count($_parts) < 2) {
+            return [$url, []];
+        }
+
+        return [$_parts[0], static::parseQueryString($_parts[1])];
+    }
+
+    /**
+     * Splits up query string key/value pairs
+     *
+     * @param string $query
+     *
+     * @return array
+     */
+    public static function parseQueryString($query)
+    {
+        $_result = [];
+
+        if (!empty($_pairs = explode('&', trim($query, ' ?&')))) {
+            foreach ($_pairs as $_pair) {
+                $_tuple = explode('=', $_pair);
+                if (count($_tuple)) {
+                    $_result[array_get($_tuple, 0)] = array_get($_tuple, 1);
+                }
+            }
+        }
+
+        return $_result;
     }
 }
