@@ -14,7 +14,6 @@ class Uri
      * @param bool   $normalize If true, uri will be normalized to a string
      *
      * @return array|string
-     * @todo support query string parameters
      */
     public static function parse($uri, $normalize = false)
     {
@@ -73,17 +72,19 @@ class Uri
             'scheme' => $_scheme,
             'host'   => $_host,
             'port'   => $_port,
+            'query'  => $_query = static::parseQueryString(array_get($_parts, 'query'), false),
         ];
 
-        return $normalize ? static::normalize($_uri) : $_uri;
+        return $normalize ? static::normalize($_uri, $_query) : $_uri;
     }
 
     /**
-     * @param array $parts Parts of an uri
+     * @param array      $parts Parts of an uri
+     * @param array|null $query Any query string parameters
      *
      * @return string
      */
-    public static function normalize(array $parts)
+    public static function normalize(array $parts, $query = null)
     {
         $_uri = $parts['scheme'] . '://' . $parts['host'];
 
@@ -91,7 +92,7 @@ class Uri
             $_uri .= ':' . $parts['port'];
         }
 
-        return trim($_uri);
+        return trim($_uri) . ($query ? '?' . implode('&', $query) : null);
     }
 
     /**
@@ -122,7 +123,7 @@ class Uri
     }
 
     /**
-     * Add a query string to ANY url
+     * Add a query string parameter to ANY url
      *
      * @param string       $url   The URI to adjust
      * @param string|array $key   The query parameter key or an array of key/value pairs
@@ -132,13 +133,11 @@ class Uri
      */
     public static function addUrlParameter($url, $key, $value = null)
     {
-        list($_url, $_params) = static::splitUrl($url);
+        list($_url, $_query) = static::splitUrl($url, false);
 
         if (!is_array($key)) {
             $key = [$key => $value];
         }
-
-        $_query = null;
 
         foreach ($key as $_key => $_value) {
             $_query[] = $_key . '=' . $_value;
@@ -151,10 +150,11 @@ class Uri
      * Splits an url into the address and query string portions
      *
      * @param string $url
+     * @param bool   $splitPairs If true, query string parameters return format is [ 'key' => 'value', ...]. Otherwise it is ['key=value',...]
      *
      * @return array An array of $url and $pairs [ 0 => 'url', 1 => [ 'key1' => 'value1', ...] ]
      */
-    public static function splitUrl($url)
+    public static function splitUrl($url, $splitPairs = true)
     {
         if (false === ($_pos = strpos($url, '?'))) {
             return [$url, []];
@@ -166,23 +166,30 @@ class Uri
             return [$url, []];
         }
 
-        return [$_parts[0], static::parseQueryString($_parts[1])];
+        return [$_parts[0], static::parseQueryString($_parts[1], $splitPairs)];
     }
 
     /**
      * Splits up query string key/value pairs
      *
-     * @param string $query
+     * @param string $query      The query string
+     * @param bool   $splitPairs If true, pairs will be split and the array returned is [ 'key' => 'value', ...]. Otherwise the format is ['key=value',...]
      *
      * @return array
      */
-    public static function parseQueryString($query)
+    public static function parseQueryString($query, $splitPairs = true)
     {
         $_result = [];
 
-        if (!empty($_pairs = explode('&', trim($query, ' ?&')))) {
+        if (!empty($query) && !empty($_pairs = explode('&', trim($query, ' ?&')))) {
             foreach ($_pairs as $_pair) {
+                if (!$splitPairs) {
+                    $_result[] = $_pair;
+                    continue;
+                }
+
                 $_tuple = explode('=', $_pair);
+
                 if (count($_tuple)) {
                     $_result[array_get($_tuple, 0)] = array_get($_tuple, 1);
                 }
