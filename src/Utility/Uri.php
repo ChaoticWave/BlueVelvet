@@ -181,18 +181,15 @@ class Uri
     {
         $_result = [];
 
-        if (!empty($query) && !empty($_pairs = explode('&', trim($query, ' ?&')))) {
-            foreach ($_pairs as $_pair) {
-                if (!$splitPairs) {
-                    $_result[] = $_pair;
-                    continue;
-                }
+        if (!empty($query)) {
+            parse_str($query, $_pairs);
 
-                $_tuple = explode('=', $_pair);
+            if ($splitPairs) {
+                return $_pairs;
+            }
 
-                if (count($_tuple)) {
-                    $_result[array_get($_tuple, 0)] = array_get($_tuple, 1);
-                }
+            foreach ($_pairs as $_key => $_value) {
+                $_result[] = $_key . '=' . urlencode($_value);
             }
         }
 
