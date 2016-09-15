@@ -28,11 +28,7 @@ class Disk
      */
     public static function path($parts, $create = false, $mode = 0777, $recursive = true)
     {
-        $_path = static::segment($parts, true);
-
-        if ($_path && DIRECTORY_SEPARATOR != $_path[0]) {
-            app('log')->debug('Build path without leading slash: ' . $_path);
-        }
+        $_path = static::normalizePath(static::segment($parts, true));
 
         if (empty($_path)) {
             if ($create) {
@@ -162,7 +158,7 @@ class Disk
         if ('\\' == DIRECTORY_SEPARATOR) {
             if (isset($path, $path[1], $path[2]) && ':' === $path[1] && '\\' === $path[2]) {
                 if (false !== strpos($path, '/')) {
-                    $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
+                    $path = ltrim(str_replace('/', DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR);
                 }
             }
         }
