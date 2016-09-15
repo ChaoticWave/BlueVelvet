@@ -59,7 +59,7 @@ class Curl extends Verbs
     /**
      * @var bool If true, auto-decoded response is returned as an array
      */
-    protected static $decodeToArray = false;
+    protected static $decodeToArray = true;
     /**
      * @var bool If true, PUTs are transferred via CURL's INFILE method. Otherwise, data is PUT via POSTFIELDS.
      */
@@ -74,15 +74,15 @@ class Curl extends Verbs
     //*************************************************************************
 
     /**
-     * @param string          $url
-     * @param array|\stdClass $payload
-     * @param array           $curlOptions
+     * @param string $url
+     * @param array  $query Any query string parameters to add to the url
+     * @param array  $curlOptions
      *
-     * @return string|\stdClass
+     * @return \stdClass|string
      */
-    public static function get($url, $payload = [], $curlOptions = [])
+    public static function get($url, $query = [], $curlOptions = [])
     {
-        return static::_httpRequest(static::GET, $url, $payload, $curlOptions);
+        return static::_httpRequest(static::GET, Uri::addUrlParameter($url, $query), [], $curlOptions);
     }
 
     /**
@@ -122,27 +122,27 @@ class Curl extends Verbs
     }
 
     /**
-     * @param string          $url
-     * @param array|\stdClass $payload
-     * @param array           $curlOptions
+     * @param string $url
+     * @param array  $query Any query string parameters to add to the url
+     * @param array  $curlOptions
      *
      * @return bool|mixed|\stdClass
      */
-    public static function head($url, $payload = [], $curlOptions = [])
+    public static function head($url, $query = [], $curlOptions = [])
     {
-        return static::_httpRequest(static::HEAD, $url, $payload, $curlOptions);
+        return static::_httpRequest(static::HEAD, Uri::addUrlParameter($url, $query), [], $curlOptions);
     }
 
     /**
-     * @param string          $url
-     * @param array|\stdClass $payload
-     * @param array           $curlOptions
+     * @param string $url
+     * @param array  $query Any query string parameters to add to the url
+     * @param array  $curlOptions
      *
      * @return bool|mixed|\stdClass
      */
-    public static function options($url, $payload = [], $curlOptions = [])
+    public static function options($url, $query = [], $curlOptions = [])
     {
-        return static::_httpRequest(static::OPTIONS, $url, $payload, $curlOptions);
+        return static::_httpRequest(static::OPTIONS, Uri::addUrlParameter($url, $query), [], $curlOptions);
     }
 
     /**
@@ -329,7 +329,7 @@ class Curl extends Verbs
 
                         foreach ($_raw as $_line) {
                             //	Skip the first line (HTTP/1.x response)
-                            if ($_first || preg_match('/^HTTP\/[0-9\.]+ [0-9]+/', $_line)) {
+                            if ($_first || preg_match('/^HTTP\/[0-9.]+ [0-9]+/', $_line)) {
                                 $_first = false;
                                 continue;
                             }

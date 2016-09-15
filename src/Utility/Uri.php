@@ -1,5 +1,8 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
+/**
+ * HTTP URL/URI helpers
+ */
 class Uri
 {
     //******************************************************************************
@@ -69,17 +72,19 @@ class Uri
             'scheme' => $_scheme,
             'host'   => $_host,
             'port'   => $_port,
+            'query'  => $_query = static::parseQueryString(array_get($_parts, 'query'), false),
         ];
 
-        return $normalize ? static::normalize($_uri) : $_uri;
+        return $normalize ? static::normalize($_uri, $_query) : $_uri;
     }
 
     /**
-     * @param array $parts Parts of an uri
+     * @param array      $parts Parts of an uri
+     * @param array|null $query Any query string parameters
      *
      * @return string
      */
-    public static function normalize(array $parts)
+    public static function normalize(array $parts, $query = null)
     {
         $_uri = $parts['scheme'] . '://' . $parts['host'];
 
@@ -87,7 +92,7 @@ class Uri
             $_uri .= ':' . $parts['port'];
         }
 
-        return trim($_uri);
+        return trim($_uri) . ($query ? '?' . implode('&', $query) : null);
     }
 
     /**
@@ -115,5 +120,79 @@ class Uri
     public static function segment($parts = [], $leading = true, $separator = '/')
     {
         return Disk::segment($parts, $leading, $separator);
+    }
+
+    /**
+     * Add a query string parameter to ANY url
+     *
+     * @param string       $url   The URI to adjust
+     * @param string|array $key   The query parameter key or an array of key/value pairs
+     * @param mixed|null   $value The query parameter value
+     *
+     * @return string The url with the parameter added to the end
+     */
+    public static function addUrlParameter($url, $key, $value = null)
+    {
+        list($_url, $_query) = static::splitUrl($url, false);
+
+        if (!is_array($key)) {
+            $key = [$key => $value];
+        }
+
+        foreach ($key as $_key => $_value) {
+            $_query[] = $_key . '=' . $_value;
+        }
+
+        return $_url . ($_query ? '?' . implode('&', $_query) : null);
+    }
+
+    /**
+     * Splits an url into the address and query string portions
+     *
+     * @param string $url
+     * @param bool   $splitPairs If true, query string parameters return format is [ 'key' => 'value', ...]. Otherwise it is ['key=value',...]
+     *
+     * @return array An array of $url and $pairs [ 0 => 'url', 1 => [ 'key1' => 'value1', ...] ]
+     */
+    public static function splitUrl($url, $splitPairs = true)
+    {
+        if (false === ($_pos = strpos($url, '?'))) {
+            return [$url, []];
+        }
+
+        $_parts = explode('?', $url);
+
+        if (count($_parts) < 2) {
+            return [$url, []];
+        }
+
+        return [$_parts[0], static::parseQueryString($_parts[1], $splitPairs)];
+    }
+
+    /**
+     * Splits up query string key/value pairs
+     *
+     * @param string $query      The query string
+     * @param bool   $splitPairs If true, pairs will be split and the array returned is [ 'key' => 'value', ...]. Otherwise the format is ['key=value',...]
+     *
+     * @return array
+     */
+    public static function parseQueryString($query, $splitPairs = true)
+    {
+        $_result = [];
+
+        if (!empty($query)) {
+            parse_str($query, $_pairs);
+
+            if ($splitPairs) {
+                return $_pairs;
+            }
+
+            foreach ($_pairs as $_key => $_value) {
+                $_result[] = $_key . '=' . urlencode($_value);
+            }
+        }
+
+        return $_result;
     }
 }
