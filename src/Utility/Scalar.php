@@ -231,4 +231,24 @@ class Scalar
         //  Return the string or null if empty
         return (empty($_result) || $_result == $delimiter) ? null : $_result;
     }
+
+    /**
+     * Test to see if $charset is a valid character set
+     *
+     * @param string $charset
+     *
+     * @return bool
+     */
+    public static function isValidCharset($charset)
+    {
+        static $_valid;
+
+        if (empty($_valid)) {
+            foreach (mb_list_encodings() as $_charset) {
+                $_valid[] = strtolower($_charset);
+            }
+        }
+
+        return in_array(strtolower($charset), $_valid);
+    }
 }
