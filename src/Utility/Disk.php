@@ -155,11 +155,10 @@ class Disk
      */
     public static function normalizePath($path)
     {
+        //  Clean up windows directories
         if ('\\' == DIRECTORY_SEPARATOR) {
-            if (isset($path, $path[1], $path[2]) && ':' === $path[1] && '\\' === $path[2]) {
-                if (false !== strpos($path, '/')) {
-                    $path = ltrim(str_replace('/', DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR);
-                }
+            if (isset($path, $path[2], $path[3]) && ':' === $path[2] && '\\' === $path[3]) {
+                $path = ltrim(str_replace('/', DIRECTORY_SEPARATOR, $path), DIRECTORY_SEPARATOR);
             }
         }
 
