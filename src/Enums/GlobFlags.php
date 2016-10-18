@@ -26,4 +26,20 @@ class GlobFlags extends BaseEnum
      * @type int
      */
     const GLOB_RECURSE = 0x0800;
+    /**
+     * @type int
+     */
+    const NODIR = 0x0100;
+    /**
+     * @type int
+     */
+    const PATH = 0x0200;
+    /**
+     * @type int
+     */
+    const NODOTS = 0x0400;
+    /**
+     * @type int
+     */
+    const RECURSE = 0x0800;
 }

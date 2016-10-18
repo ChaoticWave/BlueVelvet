@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Response;
 
-class BasePacket
+abstract class BasePacket
 {
     //******************************************************************************
     //* Constants
@@ -16,6 +16,34 @@ class BasePacket
     //******************************************************************************
     //* Methods
     //******************************************************************************
+
+    /**
+     * Generates a signature for a packet request response
+     *
+     * @param array $packet
+     *
+     * @return array
+     */
+    protected static function signPacket(array $packet = [])
+    {
+        $_startTime = array_get($_SERVER, 'REQUEST_TIME_FLOAT', array_get($_SERVER, 'REQUEST_TIME', $_timestamp = microtime(true)));
+        $_elapsed = $_timestamp - $_startTime;
+
+        $_id = sha1($_startTime . array_get($_SERVER, 'HTTP_HOST') . array_get($_SERVER, 'REMOTE_ADDR'));
+
+        //  All packets have this
+        $packet['request'] = [
+            'id'          => $_id,
+            'version'     => static::PACKET_VERSION,
+            'signature'   => base64_encode(hash_hmac('sha256', $_id, $_id, true)),
+            'verb'        => array_get($_SERVER, 'REQUEST_METHOD'),
+            'request-uri' => array_get($_SERVER, 'REQUEST_URI'),
+            'start'       => date('c', $_startTime),
+            'elapsed'     => (float)number_format($_elapsed, 4),
+        ];
+
+        return $packet;
+    }
 
     /**
      * Builds a response container
@@ -64,35 +92,6 @@ class BasePacket
         $_packet = array_merge($_packet, $_ex ? static::parseException($_ex) : ['code' => $httpCode]);
 
         return static::signPacket($_packet);
-    }
-
-    /**
-     * Generates a signature for a packet request response
-     *
-     * @param array $packet
-     *
-     * @return array
-     *
-     */
-    protected static function signPacket(array $packet = [])
-    {
-        $_startTime = array_get($_SERVER, 'REQUEST_TIME_FLOAT', array_get($_SERVER, 'REQUEST_TIME', $_timestamp = microtime(true)));
-        $_elapsed = $_timestamp - $_startTime;
-
-        $_id = sha1($_startTime . array_get($_SERVER, 'HTTP_HOST') . array_get($_SERVER, 'REMOTE_ADDR'));
-
-        //  All packets have this
-        $packet['request'] = [
-            'id'          => $_id,
-            'version'     => static::PACKET_VERSION,
-            'signature'   => base64_encode(hash_hmac('sha256', $_id, $_id, true)),
-            'verb'        => array_get($_SERVER, 'REQUEST_METHOD'),
-            'request-uri' => array_get($_SERVER, 'REQUEST_URI'),
-            'start'       => date('c', $_startTime),
-            'elapsed'     => (float)number_format($_elapsed, 4),
-        ];
-
-        return $packet;
     }
 
     /**

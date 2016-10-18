@@ -1,7 +1,9 @@
 <?php namespace ChaoticWave\BlueVelvet\Enums;
 
+use Monolog\Logger;
+
 /**
- * A placeholder for PHP error strings
+ * PHP error constant strings
  */
 class PhpErrors extends BaseEnum
 {
@@ -10,82 +12,110 @@ class PhpErrors extends BaseEnum
     //******************************************************************************
 
     /**
-     * Given a PHP error_reporting value, spit back the error constant.
+     * Given a PHP error_reporting value, spit back the first matching error constant.
      *
      * @param int $type
      *
      * @return string
      */
-    public function getErrorName($type)
+    public static function getName($type)
     {
-        $_errorType = 'E_UNKNOWN';
-
         switch ($type) {
             case E_ERROR:
-                $_errorType = 'E_ERROR';
-                break;
+                return 'E_ERROR';
 
             case E_WARNING:
-                $_errorType = 'E_WARNING';
-                break;
+                return 'E_WARNING';
 
             case E_PARSE:
-                $_errorType = 'E_PARSE';
-                break;
+                return 'E_PARSE';
 
             case E_NOTICE:
-                $_errorType = 'E_NOTICE';
-                break;
+                return 'E_NOTICE';
 
             case E_CORE_ERROR:
-                $_errorType = 'E_CORE_ERROR';
-                break;
+                return 'E_CORE_ERROR';
 
             case E_CORE_WARNING:
-                $_errorType = 'E_CORE_WARNING';
-                break;
+                return 'E_CORE_WARNING';
 
             case E_COMPILE_ERROR:
-                $_errorType = 'E_COMPILE_ERROR';
-                break;
+                return 'E_COMPILE_ERROR';
 
             case E_COMPILE_WARNING:
-                $_errorType = 'E_COMPILE_WARNING';
-                break;
+                return 'E_COMPILE_WARNING';
 
             case E_USER_ERROR:
-                $_errorType = 'E_USER_ERROR';
-                break;
+                return 'E_USER_ERROR';
 
             case E_USER_WARNING:
-                $_errorType = 'E_USER_WARNING';
-                break;
+                return 'E_USER_WARNING';
 
             case E_USER_NOTICE:
-                $_errorType = 'E_USER_NOTICE';
-                break;
+                return 'E_USER_NOTICE';
 
             case E_STRICT:
-                $_errorType = 'E_STRICT';
-                break;
+                return 'E_STRICT';
 
             case E_RECOVERABLE_ERROR:
-                $_errorType = 'E_RECOVERABLE_ERROR';
-                break;
+                return 'E_RECOVERABLE_ERROR';
 
             case E_DEPRECATED:
-                $_errorType = 'E_DEPRECATED';
-                break;
+                return 'E_DEPRECATED';
 
             case E_USER_DEPRECATED:
-                $_errorType = 'E_USER_DEPRECATED';
-                break;
+                return 'E_USER_DEPRECATED';
 
             case E_ALL:
-                $_errorType = 'E_ALL';
-                break;
+                return 'E_ALL';
         }
 
-        return $_errorType;
+        return null;
+    }
+
+    /**
+     * Given a PHP error_reporting value, spit back all matching error constants.
+     *
+     * @param int $type
+     *
+     * @return array|null
+     */
+    public static function getNames($type)
+    {
+        $_types = null;
+
+        for ($_i = 0; $_i < 15; $_i++) {
+            if (null !== ($_name = static::getName($type & pow(2, $_i)))) {
+                $_types[] = $_name;
+            }
+        }
+
+        return $_types;
+    }
+
+    /**
+     * @param int  $error  The PHP error value
+     * @param bool $string If true, returns the generalized level of the error. If false, the Monolog integer logging level is returned.
+     *
+     * @return int|string
+     */
+    public static function toLevel($error, $string = false)
+    {
+        $_name = static::getName($error);
+
+        if (in_array($_name, [E_ERROR, E_USER_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_RECOVERABLE_ERROR, E_PARSE])) {
+            return $string ? 'error' : Logger::ERROR;
+        }
+
+        if (in_array(static::getName($error), [E_WARNING, E_USER_WARNING, E_CORE_WARNING, E_COMPILE_WARNING])) {
+            return $string ? 'warning' : Logger::WARNING;
+        }
+
+        if (in_array(static::getName($error), [E_NOTICE, E_USER_NOTICE, E_DEPRECATED, E_USER_DEPRECATED])) {
+            return $string ? 'notice' : Logger::NOTICE;
+        }
+
+        //  Return an error because it's not one of the above?
+        return $string ? $_name : Logger::ERROR;
     }
 }

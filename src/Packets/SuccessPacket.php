@@ -20,5 +20,4 @@ class SuccessPacket extends BasePacket
     {
         return parent::make($contents, $httpCode);
     }
-
 }
