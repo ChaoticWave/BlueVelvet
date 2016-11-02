@@ -310,13 +310,17 @@ abstract class BaseEnum
     /**
      * Returns the strict bitwise AND of $constant's value and $mask
      *
-     * @param mixed $constant The constant name or value
-     * @param int   $mask     The bit mask to check
+     * @param string|int $constant The constant name or numeric value
+     * @param int        $mask     The bit mask to check
      *
      * @return bool
      */
     public static function bitSet($constant, $mask = 0)
     {
-        return $mask === (static::resolve($constant) & $mask);
+        if (!is_numeric($constant)) {
+            $constant = static::resolve($constant);
+        }
+
+        return ($mask == ($constant & $mask));
     }
 }
