@@ -44,9 +44,13 @@ trait FiresEvents
 
     /**
      * @param string $prefix The prefix for event names (i.e. "blue-velvet", "my-app", etc.)
+     *
+     * @return $this
      */
     protected function setEventPrefix($prefix)
     {
         $this->__fePrefix = $prefix;
+
+        return $this;
     }
 }
