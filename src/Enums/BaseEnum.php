@@ -159,9 +159,7 @@ abstract class BaseEnum
 
     /**
      * Returns constant name or true/false if class contains a specific constant value.
-     *
      * Use for validity checks:
-     *
      *    if ( false === VeryCoolShit::contains( $evenCoolerShit ) ) {
      *        throw new \InvalidArgumentException( 'Sorry, your selection of "' . $evenCoolerShit . '" is invalid.' );
      *    }
@@ -198,9 +196,7 @@ abstract class BaseEnum
      * Returns true or false if this class defines a specific constant.
      * Optionally returns the value of the constant, but throws an
      * exception if not found.
-     *
      * Use for validity checks:
-     *
      *    if ( false === VeryCoolShit::contains( $evenCoolerShit ) ) {
      *        throw new \InvalidArgumentException( 'Sorry, your selection of "' . $evenCoolerShit . '" is invalid.' );
      *    }
@@ -308,7 +304,7 @@ abstract class BaseEnum
     }
 
     /**
-     * Returns the strict bitwise AND of $constant's value and $mask
+     * Returns the strict bitwise (all bits set) AND of $constant's value and $mask
      *
      * @param string|int $constant The constant name or numeric value
      * @param int        $mask     The bit mask to check
@@ -317,8 +313,12 @@ abstract class BaseEnum
      */
     public static function bitSet($constant, $mask = 0)
     {
-        if (!is_numeric($constant)) {
-            $constant = static::resolve($constant);
+        try {
+            if (!is_numeric($constant)) {
+                $constant = static::resolve($constant);
+            }
+        } catch (\Exception $_ex) {
+            $constant = 0;
         }
 
         return ($mask == ($constant & $mask));
