@@ -14,9 +14,7 @@ class Disk
 
     /**
      * Builds a path from arguments and validates existence.
-     *
      *      $_path = Disk::path(['path','to','my','stuff'], true);
-     *
      *      The result is "/path/to/my/stuff"
      *
      * @param array|string $parts     The segments of the path to build
@@ -63,7 +61,6 @@ class Disk
     /**
      * As found on php.net posted by: BigueNique at yahoo dot ca 20-Apr-2010 07:15
      * A safe empowered glob().
-     *
      * Supported flags: GLOB_MARK, GLOB_NOSORT, GLOB_ONLYDIR
      * Additional flags: GlobFlags::GLOB_NODIR, GlobFlags::GLOB_PATH, GlobFlags::GLOB_NODOTS, GlobFlags::GLOB_RECURSE
      * (not original glob() flags, defined here)
@@ -108,10 +105,7 @@ class Disk
                         ((!($flags & GlobFlags::GLOB_NODOTS)) || (!in_array($_file,
                                 ['.', '..'])))
                     ) {
-                        $_glob[] =
-                            ($flags & GlobFlags::GLOB_PATH ? $_path . '/' : null) .
-                            $_file .
-                            ($flags & GLOB_MARK ? '/' : '');
+                        $_glob[] = ($flags & GlobFlags::GLOB_PATH ? $_path . '/' : null) . $_file . ($flags & GLOB_MARK ? '/' : '');
                     }
                 }
             }
@@ -168,7 +162,6 @@ class Disk
     /**
      * Ensures that a path exists
      * If path does not exist, it is created. If creation fails, FALSE is returned.
-     *
      * NOTE: Output of mkdir is squelched.
      *
      * @param string $path      The path the ensure
@@ -245,5 +238,23 @@ class Disk
         }
 
         return finfo_file($_resource, $fileName);
+    }
+
+    /**
+     * Cleans up a filename or path
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    public static function cleanPath($path)
+    {
+        $_parts = explode(DIRECTORY_SEPARATOR, trim($path, ' ' . DIRECTORY_SEPARATOR));
+
+        if (empty($_parts)) {
+            return $path;
+        }
+
+        return static::path($_parts);
     }
 }

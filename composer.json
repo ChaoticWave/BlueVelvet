@@ -14,13 +14,13 @@
     "license":      "MIT",
     "type":         "library",
     "require":      {
-        "php":                       ">=5.5.9",
-        "vlucas/phpdotenv":          "~2.2",
-        "graham-campbell/flysystem": "^3.0",
-        "laravel/lumen-framework":   "^5.2"
+        "php":                         ">=5.5.9",
+        "vlucas/phpdotenv":            "~2.2",
+        "graham-campbell/flysystem":   "^3.0",
+        "barryvdh/laravel-ide-helper": "^2.2",
+        "laravel/lumen-framework":     "^5.2"
     },
     "require-dev":  {
-        "barryvdh/laravel-ide-helper": "^2.2",
         "fzaninotto/faker":            "~1.4",
         "phpunit/phpunit":             "~4.0"
     },
