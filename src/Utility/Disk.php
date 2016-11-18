@@ -257,4 +257,30 @@ class Disk
 
         return static::path($_parts);
     }
+
+    /**
+     * Ensure a trailing slash is on $path
+     *
+     * @param string $path
+     * @param string $separator
+     *
+     * @return string
+     */
+    public static function trailing($path, $separator = DIRECTORY_SEPARATOR)
+    {
+        return rtrim($path, ' ' . $separator) . $separator;
+    }
+
+    /**
+     * Ensure a leading slash is on $path
+     *
+     * @param string $path
+     * @param string $separator
+     *
+     * @return string
+     */
+    public static function leading($path, $separator = DIRECTORY_SEPARATOR)
+    {
+        return $separator . ltrim($path, ' ' . $separator);
+    }
 }
