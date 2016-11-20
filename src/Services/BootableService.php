@@ -16,5 +16,5 @@ abstract class BootableService extends BaseService implements Bootable
     //* Traits
     //******************************************************************************
 
-    use FiresEvents, HasApplication, HasAppLogger;
+    use FiresEvents;
 }
