@@ -64,10 +64,7 @@ abstract class BaseServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return
-            static::ALIAS
-                ? array_merge(parent::provides(), [static::ALIAS,])
-                : parent::provides();
+        return static::ALIAS ? array_merge(parent::provides(), [static::ALIAS,]) : parent::provides();
     }
 
     /**
@@ -115,5 +112,19 @@ abstract class BaseServiceProvider extends ServiceProvider
 
         //  Make the service
         return $app ? $app->make(static::ALIAS, $_params) : app(static::ALIAS, $_params);
+    }
+
+    /**
+     * Register a view file namespace.
+     *
+     * @param  string $path
+     * @param  string $namespace
+     */
+    protected function loadViewsFrom($path, $namespace)
+    {
+        //  Make sure we have a resource path when using lumen
+        if ($this->app && method_exists($this->app, 'resourcePath')) {
+            parent::loadViewsFrom($path, $namespace);
+        }
     }
 }
