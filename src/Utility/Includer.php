@@ -5,43 +5,68 @@
  */
 class Includer
 {
+    //******************************************************************************
+    //* Methods
+    //******************************************************************************
+
+    /**
+     * Convenience access method for "include()"
+     *
+     * @param array|string $file
+     * @param bool         $once
+     * @param array|bool   $extract
+     *
+     * @return mixed
+     */
+    public static function includeFile($file, $once = true, $extract = false)
+    {
+        return static::includeIfExists($file, false, $once, $extract);
+    }
+
+    /**
+     * Convenience access method for "require()"
+     *
+     * @param array|string $file    An absolute file name or an array of parts to assemble into one
+     * @param bool         $once    If true, include|require_once() will be used instead of include|require()
+     * @param array|bool   $extract If true, an array of variables defined in $file will be returned
+     *
+     * @return mixed
+     */
+    public static function requireFile($file, $once = true, $extract = false)
+    {
+        return static::includeIfExists($file, true, $once, $extract);
+    }
+
     /**
      * Requires a file only if it exists
      *
-     * @param string $file    the absolute /path/to/file.php
-     * @param bool   $require use "require" instead of "include"
-     * @param bool   $once    use "include_once" or "require_once" if $require is true
+     * @param array|string $file    An absolute file name or an array of parts to assemble into one
+     * @param bool         $require use "require" instead of "include"
+     * @param bool         $once    use "include_once" or "require_once" if $require is true
+     * @param bool         $extract If true, any declarations in the included file are returned
      *
      * @return bool|mixed
      */
-    public static function includeIfExists($file, $require = false, $once = false)
+    public static function includeIfExists($file, $require = false, $once = false, $extract = false)
     {
-        if (file_exists($file) && is_readable($file)) {
-            /** @noinspection PhpIncludeInspection */
-            return $require
-                ? ($once ? require_once($file) : require($file))
-                : ($once ? include_once($file)
-                    : include($file));
-        }
-
-        return false;
+        return static::includeFileExtract($file, $require, $once, $extract);
     }
 
     /**
      * Looks for file in the
      *
-     * @param string $filename The file name relative to the application root
-     * @param bool   $require  require vs. include
-     * @param bool   $once     require_once vs. include_once
-     * @param bool   $extract  If true, any declarations in the included file are returned
+     * @param array|string $filename An absolute OR relative (to app.base_path) file name or an array of parts to assemble into one
+     * @param bool         $require  require vs. include
+     * @param bool         $once     require_once vs. include_once
+     * @param bool         $extract  If true, any declarations in the included file are returned
      *
-     * @return mixed The extracted variables from the include file. Include/require return otherwise
+     * @return array|bool|mixed The extracted variables from the include file. Include/require return otherwise
      */
     public static function includeFileExtract($filename, $require = false, $once = false, $extract = true)
     {
         $_result = null;
 
-        if (!file_exists($_file = $filename)) {
+        if (!is_readable($_file = Disk::path($filename))) {
             if (!function_exists('base_path')) {
                 return false;
             }
@@ -49,8 +74,8 @@ class Includer
             //  See if the file exists in the root or in config/
             $_file = base_path($filename);
 
-            if (!file_exists($_file)) {
-                if (!file_exists($_file = base_path('config/' . $filename))) {
+            if (!is_readable($_file)) {
+                if (!is_readable($_file = base_path('config/' . $filename))) {
                     return false;
                 }
             }
