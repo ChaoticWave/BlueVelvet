@@ -3,9 +3,9 @@
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
- * Otherwise unavailable array functions
+ * Otherwise unavailable array/object merge functions
  */
-class Arrays
+class Merger
 {
     //******************************************************************************
     //* Methods
@@ -42,29 +42,5 @@ class Arrays
         }
 
         return $target;
-    }
-
-    /**
-     * Test if the value of CONSTANT has $mask bits set
-     *
-     * @param int $constant The value to check
-     * @param int $mask     The bitmask to use
-     *
-     * @return bool FALSE if test fails or invalid constant, TRUE otherwise
-     */
-    public static function testConstant($constant, $mask = 0)
-    {
-        try {
-            if (!is_numeric($constant)) {
-                if (null === ($constant = constant($constant))) {
-                    return false;
-                }
-            }
-
-            return static::test($constant, $mask);
-        } catch (\Exception $_ex) {
-        }
-
-        return false;
     }
 }
