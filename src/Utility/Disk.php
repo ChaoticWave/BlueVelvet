@@ -268,7 +268,7 @@ class Disk
      */
     public static function trailing($path, $separator = DIRECTORY_SEPARATOR)
     {
-        return rtrim($path, ' ' . $separator) . $separator;
+        return rtrim(static::path($path), ' ' . $separator) . $separator;
     }
 
     /**
@@ -281,7 +281,7 @@ class Disk
      */
     public static function leading($path, $separator = DIRECTORY_SEPARATOR)
     {
-        return $separator . ltrim($path, ' ' . $separator);
+        return $separator . ltrim(static::path($path), ' ' . $separator);
     }
 
     /**
