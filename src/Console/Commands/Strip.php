@@ -13,7 +13,7 @@ class Strip extends BaseCommand
     //******************************************************************************
 
     /** @inheritdoc */
-    protected $signature = 'bv:strip {pattern : A file glob pattern} {--pretty : If present, the resulting code will be prettified} {--recursive|-r : Recurse into subdirectories';
+    protected $signature = 'bv:strip {pattern : A file glob pattern} {--pretty : If present, the resulting code will be prettified} {--recursive : Recurse into subdirectories}';
     /** @inheritdoc */
     protected $description = 'Strips comments from a PHP file, optionally prettifying';
     /**
@@ -26,23 +26,12 @@ class Strip extends BaseCommand
     //******************************************************************************
 
     /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        //  Find php-cs-fixer
-        if (is_executable($_fixer = __DIR__ . '/../../../vendor/bin/php-cs-fixer')) {
-            $this->fixer = $_fixer;
-        }
-    }
-
-    /**
      * Handle the work
      */
     public function handle()
     {
+        $this->writeHeader();
+
         $_pattern = $this->argument('pattern');
         $_pretty = $this->option('pretty');
         $_flags = GlobFlags::GLOB_NODOTS | GlobFlags::GLOB_PATH;
@@ -61,14 +50,21 @@ class Strip extends BaseCommand
         }
 
         //  Find php-cs-fixer
+        if (file_exists($_fixer = getcwd() . '/vendor/bin/php-cs-fixer')) {
+            $this->fixer = $_fixer;
+        }
+
+        //  Find php-cs-fixer
         if ($_pretty && !$this->fixer) {
             $this->writeln('The <comment>php-cs-fixer</comment> is not installed or not executable. No prettifying.');
             $_pretty = false;
         }
 
         foreach ($_files as $_file) {
-            $this->write($_file . ':');
-            $this->$this->stripFile($_file, $_pretty);
+            $this->write($_file . ': ');
+            if (false === $this->stripFile($_file, $_pretty)) {
+                $this->writeln('error');
+            }
         }
 
         return 0;
@@ -78,7 +74,7 @@ class Strip extends BaseCommand
      * @param string $file
      * @param bool   $pretty
      *
-     * @return bool
+     * @return bool|int
      */
     protected function stripFile($file, $pretty = false)
     {
@@ -95,7 +91,8 @@ class Strip extends BaseCommand
         }
 
         if ($pretty) {
-            $_cmd = $this->fixer . ' ' . escapeshellarg($file) . ' --rules=@PSR2';
+            $_cmd = $this->fixer . ' fix --quiet ' . escapeshellarg(realpath($file)) . ' ';
+            $this->write(' (' . $_cmd . ') ');
             exec($_cmd, $_output, $_return);
 
             if (0 === $_return) {
@@ -103,7 +100,9 @@ class Strip extends BaseCommand
             }
         }
 
-        file_put_contents($file . '.strip', $this->stripComments($_contents));
+        if (false !== file_put_contents($file . '.strip', $this->stripComments($_contents))) {
+            $this->comment('wrote .strip');
+        }
 
         return true;
     }
@@ -120,6 +119,7 @@ class Strip extends BaseCommand
         $_search = array(T_COMMENT);
         defined('T_DOC_COMMENT') && $_search[] = T_DOC_COMMENT;
         defined('T_ML_COMMENT') && $_search[] = T_ML_COMMENT;
+        is_array($string) && $string = implode(PHP_EOL, $string);
 
         $_tokens = token_get_all($string);
 
