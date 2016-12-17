@@ -92,7 +92,7 @@ class Disk
                 $_fullPath = $_path . DIRECTORY_SEPARATOR . $_file;
 
                 //	Recurse directories
-                if (is_dir($_fullPath) && ($flags & GlobFlags::GLOB_RECURSE) && in_array($_file, ['.', '..'])) {
+                if (is_dir($_fullPath) && ($flags & GlobFlags::GLOB_RECURSE) && !in_array($_file, ['.', '..'])) {
                     $_glob = array_merge($_glob,
                         Scalar::array_prepend(static::glob($_fullPath . DIRECTORY_SEPARATOR . $_mask, $flags),
                             ($flags & GlobFlags::GLOB_PATH ? null : $_file . DIRECTORY_SEPARATOR)));
