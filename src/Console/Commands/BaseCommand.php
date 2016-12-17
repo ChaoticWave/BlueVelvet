@@ -3,7 +3,6 @@
 use ChaoticWave\BlueVelvet\Utility\Json;
 use ChaoticWave\BlueVelvet\Shapers\XmlShape;
 use Illuminate\Console\Command;
-use Illuminate\Support\Composer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -16,14 +15,6 @@ abstract class BaseCommand extends Command
     //* Members
     //******************************************************************************
 
-    /**
-     * @type Composer The Composer class instance.
-     */
-    protected $composer;
-    /**
-     * @type \Illuminate\Filesystem\Filesystem The filesystem instance.
-     */
-    protected $filesystem;
     /**
      * @type bool Overridden --quiet indicator
      */

@@ -19,6 +19,30 @@ trait FiresEvents
     //******************************************************************************
 
     /**
+     * @param string|null $name The name to use for the event prefix
+     *
+     * @return $this
+     */
+    protected function initializeEvents($name = null)
+    {
+        $_class = class_basename($_fullClass = get_called_class());
+
+        if (empty($name)) {
+            $_constant = $_fullClass . '::NAME';
+
+            if (method_exists($this->app, 'getId')) {
+                $name = $this->app->getId();
+            } elseif (defined($_constant)) {
+                $name = constant($_constant);
+            }
+        }
+
+        $_module = snake_case(str_ireplace([$name, 'Service', 'Provider'], null, $_class));
+
+        return $this->setEventPrefix(implode('.', [$name, $_module]));
+    }
+
+    /**
      * Generate an application event. $name is prefixed with module event prefix
      *
      * @param string $name    The event name
