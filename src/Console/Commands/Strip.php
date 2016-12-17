@@ -1,8 +1,8 @@
 <?php namespace ChaoticWave\BlueVelvet\Console\Commands;
 
 use ChaoticWave\BlueVelvet\Enums\GlobFlags;
+use ChaoticWave\BlueVelvet\Traits\ConsoleHelper;
 use ChaoticWave\BlueVelvet\Utility\Disk;
-use Determine\Library\Utility\Traits\ConsoleHelper;
 
 class Strip extends BaseCommand
 {

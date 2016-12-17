@@ -1,4 +1,4 @@
-<?php namespace Determine\Library\Utility\Traits;
+<?php namespace ChaoticWave\BlueVelvet\Traits;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
@@ -208,7 +208,7 @@ trait ConsoleHelper
     /**
      * @param string $outputPrefix
      *
-     * @return HandlesConsoleCommands
+     * @return $this
      */
     public function setOutputPrefix($outputPrefix)
     {
