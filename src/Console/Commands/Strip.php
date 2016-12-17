@@ -34,8 +34,16 @@ class Strip extends BaseCommand
 
         $_pattern = $this->argument('pattern');
         $_pretty = $this->option('pretty');
-        $_flags = GlobFlags::GLOB_NODOTS | GlobFlags::GLOB_PATH;
+        $_flags = GlobFlags::GLOB_NODIR | GlobFlags::GLOB_NODOTS | GlobFlags::GLOB_PATH;
         $this->option('recursive') and $_flags |= GlobFlags::GLOB_RECURSE;
+
+        if ('/' != $_pattern[0]) {
+            $_pattern = base_path($_pattern);
+        }
+
+        if (!file_exists($_pattern) || is_dir($_pattern)) {
+            $_pattern = trim($_pattern, ' *') . '*';
+        }
 
         if (false === ($_files = Disk::glob($_pattern, $_flags))) {
             $this->writeln('The pattern "<comment>' . $_pattern . '</comment>" caused an error.');
@@ -61,7 +69,12 @@ class Strip extends BaseCommand
         }
 
         foreach ($_files as $_file) {
-            $this->write($_file . ': ');
+            if ('.php' != substr($_file, -4)) {
+                $this->writeln($_file . ': skipped');
+                continue;
+            }
+
+            $this->write(str_replace(base_path(), null, $_file) . ': ');
             if (false === $this->stripFile($_file, $_pretty)) {
                 $this->writeln('error');
             }
@@ -90,18 +103,24 @@ class Strip extends BaseCommand
             return false;
         }
 
-        if ($pretty) {
-            $_cmd = $this->fixer . ' fix --quiet ' . escapeshellarg(realpath($file)) . ' ';
-            $this->write(' (' . $_cmd . ') ');
-            exec($_cmd, $_output, $_return);
+        //  Make a backup...
+        copy($file, $file . '.bak');
 
-            if (0 === $_return) {
-                $_contents = $_output;
+        $_contents = $this->stripComments($_contents);
+
+        if (false !== file_put_contents($file, $_contents)) {
+            $this->comment(' written ');
+
+            if ($pretty) {
+                $_cmd = $this->fixer . ' fix --quiet ' . escapeshellarg(realpath($file)) . ' ';
+                exec($_cmd, $_output, $_return);
+
+                if (0 !== $_return) {
+                    $this->write(' <error>pretty fail</error> ');
+                } else {
+                    $this->comment(' prettified ');
+                }
             }
-        }
-
-        if (false !== file_put_contents($file . '.strip', $this->stripComments($_contents))) {
-            $this->comment('wrote .strip');
         }
 
         return true;
