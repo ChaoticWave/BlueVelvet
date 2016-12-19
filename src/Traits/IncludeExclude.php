@@ -338,7 +338,7 @@ trait IncludeExclude
         $_check = $include ? $this->_ieInclude : $this->_ieExclude;
 
         if (static::inArray($value, $_check, $this->_ieCaseSensitive)) {
-            $this->_ieExcludeReason = 'inArray:[' . $value . ']:' . json_encode($_check);
+            $this->_ieExcludeReason = 'inArray:[' . $value . ']';
 
             return true;
         }
