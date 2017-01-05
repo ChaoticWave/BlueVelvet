@@ -21,7 +21,7 @@ trait HasAppLogger
      */
     protected function logDebug($message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         return \AppLog::debug($message, $context);
     }
 
@@ -33,7 +33,7 @@ trait HasAppLogger
      */
     protected function logInfo($message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         return \AppLog::info($message, $context);
     }
 
@@ -45,7 +45,7 @@ trait HasAppLogger
      */
     protected function logNotice($message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         return \AppLog::notice($message, $context);
     }
 
@@ -57,7 +57,7 @@ trait HasAppLogger
      */
     protected function logWarning($message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         return \AppLog::warning($message, $context);
     }
 
@@ -73,7 +73,7 @@ trait HasAppLogger
             $message = 'exception (' . $message->getCode() . '): ' . $message->getMessage();
         }
 
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         \AppLog::error($message, $context);
 
         return false;
@@ -83,12 +83,11 @@ trait HasAppLogger
      * @param string $message
      * @param array  $context
      *
-     *
      * @return bool Returns FALSE always
      */
     protected function logCritical($message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         \AppLog::critical($message, $context);
 
         return false;
@@ -102,7 +101,7 @@ trait HasAppLogger
      */
     protected function logAlert($message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         \AppLog::alert($message, $context);
 
         return false;
@@ -116,7 +115,7 @@ trait HasAppLogger
      */
     protected function logEmergency($message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         \AppLog::emergency($message, $context);
 
         return false;
@@ -131,7 +130,7 @@ trait HasAppLogger
      */
     protected function logRecord($level, $message, $context = [])
     {
-        /** @noinspection PhpUndefinedClassInspection */
+        /** @noinspection PhpUndefinedMethodInspection */
         return \AppLog::addRecord($level, $message, $context);
     }
 }
