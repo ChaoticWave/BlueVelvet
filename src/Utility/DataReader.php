@@ -1,19 +1,19 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
+use Illuminate\Contracts\Support\Arrayable;
+
 /**
  * DataReader
  * Thin veneer over the PDOStatement class that implements Iterator and Countable so it's traversable via foreach!
- *
  * Proxied PDO Stuff:
  *
  * @property string $queryString
- *
  * @method bool bindParam($parameter, &$variable, $data_type = \PDO::PARAM_STR, $length = null, $driverOptions = null)
  * @method bool bindColumn($column, &$parameter, $type = null, $maxLength = null, $driverData = null)
  * @method bool bindValue($parameter, $value, $dataType = \PDO::PARAM_STR)
  * @method mixed fetch($fetchStyle = null, $cursorOrientation = \PDO::FETCH_ORI_NEXT, $cursorOffset = 0)
  * @method string fetchColumn($columnNumber = 0)
- * @method array fetchAll ($fetchStyle = null, $fetchArgument = null, array $ctorArgs = 'array()')
+ * @method array fetchAll ($fetchStyle = null, $fetchArgument = null, array $ctorArgs = array())
  * @method mixed fetchObject($className = '\\stdClass', array $ctorArgs = null)
  * @method string errorCode()
  * @method array errorInfo()
@@ -78,11 +78,11 @@ class DataReader implements \Iterator, \Countable
      * @param \PDO   $connection
      * @param int    $fetchMode
      *
-     * @return DataReader|bool
+     * @return DataReader
      */
     public static function create($sql, $parameters = null, $connection = null, $fetchMode = \PDO::FETCH_ASSOC)
     {
-        $_reader = new DataReader(Sql::createStatement($sql, $connection, $fetchMode));
+        $_reader = new static(Sql::createStatement($sql, $connection, $fetchMode));
 
         if (false === ($_result = $_reader->execute($parameters))) {
             //	Don't be wasteful
