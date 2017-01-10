@@ -100,36 +100,29 @@ trait IncludeExclude
     {
         $_conditions = [];
 
-        foreach ($array as $_key => $_value) {
-            if (is_string($_key) && !is_numeric($_key)) {
-                $_needles = is_array($_value) ? $_value : [$_value];
+        foreach ($array as $_key => $_needle) {
+            if (!is_string($_key) && is_numeric($_key)) {
+                continue;
+            }
 
-                switch ($_key) {
-                    case 'starts-with':
-                        $_conditions[$_key][] = function($haystack) use ($_needles) {
-                            return Str::startsWith($haystack, $_needles);
-                        };
-                        break;
+            switch ($_key) {
+                case 'starts-with':
+                    $_conditions[$_key][] = function($haystack) use ($_needle) {
+                        return Str::startsWith($haystack, $_needle);
+                    };
+                    break;
 
-                    case 'ends-with':
-                        $_conditions[$_key][] = function($haystack) use ($_needles) {
-                            return Str::endsWith($haystack, $_needles);
-                        };
-                        break;
+                case 'ends-with':
+                    $_conditions[$_key][] = function($haystack) use ($_needle) {
+                        return Str::endsWith($haystack, $_needle);
+                    };
+                    break;
 
-                    case 'contains':
-                        $_conditions[$_key][] = function($haystack) use ($_needles) {
-                            return Str::contains($haystack, $_needles);
-                        };
-                        break;
-
-                    default:
-                        //  No match, we can leave this data
-                        continue;
-                }
-
-                //  Remove this from the list
-                array_forget($array, $_key);
+                case 'contains':
+                    $_conditions[$_key][] = function($haystack) use ($_needle) {
+                        return Str::contains($haystack, $_needle);
+                    };
+                    break;
             }
         }
 
@@ -147,8 +140,7 @@ trait IncludeExclude
      */
     protected function filteredValues($data = [], $included = true, $callback = null)
     {
-        return array_where(
-            $this->deepFilter($data, $this->getExcludedValues()),
+        return array_where($this->deepFilter($data, $this->getExcludedValues()),
             function($key, $value) use ($included, $callback) {
                 $_result = $included ? $this->isValueIncluded($key) : $this->isValueExcluded($key);
 
