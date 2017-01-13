@@ -1,7 +1,5 @@
 <?php namespace ChaoticWave\BlueVelvet\Utility;
 
-use Illuminate\Contracts\Support\Arrayable;
-
 /**
  * DataReader
  * Thin veneer over the PDOStatement class that implements Iterator and Countable so it's traversable via foreach!
@@ -78,7 +76,7 @@ class DataReader implements \Iterator, \Countable
      * @param \PDO   $connection
      * @param int    $fetchMode
      *
-     * @return DataReader
+     * @return DataReader|bool FALSE on error
      */
     public static function create($sql, $parameters = null, $connection = null, $fetchMode = \PDO::FETCH_ASSOC)
     {
