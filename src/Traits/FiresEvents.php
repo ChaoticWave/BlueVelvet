@@ -1,5 +1,7 @@
 <?php namespace ChaoticWave\BlueVelvet\Traits;
 
+use ChaoticWave\BlueVelvet\Exceptions\HaltPropagationException;
+
 /**
  * Adds an event firing method
  */
@@ -60,8 +62,10 @@ trait FiresEvents
                 $name = trim($this->__fePrefix, ' .') . '.' . ltrim($name, ' .');
             }
 
-            return $_service->fire($name, $payload, $halt);
-        } catch (\Exception $_ex) {
+            //  Wrap the payload for passing through call_user_func_array
+            return $_service->fire($name, [$payload], $halt);
+        } catch (HaltPropagationException $_ex) {
+            //  Return false on this exception to halt propagation
             return false;
         }
     }

@@ -16,23 +16,26 @@
     "require":      {
         "php":                         ">=5.5.9",
         "vlucas/phpdotenv":            "~2.2",
+        "laravel/lumen-framework":     "5.3.*",
         "graham-campbell/flysystem":   "^3.0",
         "barryvdh/laravel-ide-helper": "^2.2",
-        "friendsofphp/php-cs-fixer":   "2.*"
+        "friendsofphp/php-cs-fixer":   "2.*",
+        "elasticsearch/elasticsearch": "~5.0"
     },
     "require-dev":  {
-        "fzaninotto/faker":        "~1.4",
-        "phpunit/phpunit":         "~4.0",
-        "laravel/lumen-framework": "~5.3"
+        "fzaninotto/faker": "~1.4",
+        "phpunit/phpunit":  "~4.0"
     },
     "autoload":     {
         "psr-4": {
-            "ChaoticWave\\BlueVelvet\\":        "src/",
-            "ChaoticWave\\BlueVelvet\\Tests\\": "tests/"
+            "ChaoticWave\\BlueVelvet\\": "src/"
         }
     },
     "autoload-dev": {
-        "classmap": []
+        "classmap": [],
+        "psr-4":    {
+            "ChaoticWave\\BlueVelvet\\Tests\\": "tests/"
+        }
     },
     "extra":        {
         "branch-alias": {
