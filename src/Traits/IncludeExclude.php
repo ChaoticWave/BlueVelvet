@@ -1,7 +1,5 @@
 <?php namespace ChaoticWave\BlueVelvet\Traits;
 
-use Illuminate\Support\Str;
-
 /**
  * Include/exclude objects that are on/not on a list
  */
@@ -82,10 +80,6 @@ trait IncludeExclude
         $this->_ieInclude = $includes;
         $this->_ieExclude = $excludes;
 
-        //  Conditions?
-        $this->_ieIncludeConditions = static::parseConditions($this->_ieInclude);
-        $this->_ieExcludeConditions = static::parseConditions($this->_ieExclude);
-
         return $this;
     }
 
@@ -107,26 +101,110 @@ trait IncludeExclude
 
             switch ($_key) {
                 case 'starts-with':
-                    $_conditions[$_key][] = function($haystack) use ($_needle) {
-                        return Str::startsWith($haystack, $_needle);
-                    };
-                    break;
-
                 case 'ends-with':
-                    $_conditions[$_key][] = function($haystack) use ($_needle) {
-                        return Str::endsWith($haystack, $_needle);
-                    };
+                case 'contains':
+                    $_conditions[$_key][] = $_needle;
                     break;
 
-                case 'contains':
-                    $_conditions[$_key][] = function($haystack) use ($_needle) {
-                        return Str::contains($haystack, $_needle);
-                    };
-                    break;
+                // default:
+                //     throw new \RuntimeException('Invalid condition "' . $_key . '" found');
             }
         }
 
         return $_conditions;
+    }
+
+    /**
+     * @param string $value
+     * @param bool   $include TRUE = includes, FALSE = excludes
+     *
+     * @return bool Returns true if $value matches one or more conditions, FALSE otherwise
+     */
+    protected function isValueConditional($value, $include = true)
+    {
+        //  JIT/Late-bound initialization
+        if (null === $this->_ieIncludeConditions || null === $this->_ieExcludeConditions) {
+            $this->_ieIncludeConditions = static::parseConditions($this->_ieInclude);
+            $this->_ieExcludeConditions = static::parseConditions($this->_ieExclude);
+        }
+
+        //  No conditions, we're done.
+        if (null === ($_conditions = ($include ? $this->_ieIncludeConditions : $this->_ieExcludeConditions)) || empty($_conditions)) {
+            return false;
+        }
+
+        //  Call each of the closures registered. They return true if matched
+        foreach ($_conditions as $_type => $_needles) {
+            switch ($_type) {
+                case 'starts-with':
+                    if (starts_with($value, $_needles)) {
+                        return true;
+                    }
+                    break;
+
+                case 'ends-with':
+                    if (ends_with($value, $_needles)) {
+                        return true;
+                    }
+                    break;
+
+                case 'contains':
+                    if (str_contains($value, $_needles)) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Caching conditional processor: contains
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    protected function conditionContains($haystack, $needles)
+    {
+        static $cache = [];
+        $_cacheKey = md5(json_encode(['contains' => [$haystack, $needles]]));
+
+        return $cache[$_cacheKey] = array_get($cache, $_cacheKey) ?: str_contains($haystack, $needles);
+    }
+
+    /**
+     * Caching conditional processor: starts-with
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    protected function conditionStartsWith($haystack, $needles)
+    {
+        static $cache = [];
+        $_cacheKey = md5(json_encode(['starts-with' => [$haystack, $needles]]));
+
+        return $cache[$_cacheKey] = array_get($cache, $_cacheKey) ?: starts_with($haystack, $needles);
+    }
+
+    /**
+     * Caching conditional processor: ends-with
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    protected function conditionEndsWith($haystack, $needles)
+    {
+        static $cache = [];
+        $_cacheKey = md5(json_encode(['ends-with' => [$haystack, $needles]]));
+
+        return $cache[$_cacheKey] = array_get($cache, $_cacheKey) ?: ends_with($haystack, $needles);
     }
 
     /**
@@ -295,29 +373,6 @@ trait IncludeExclude
     }
 
     /**
-     * @param string $value
-     * @param bool   $include TRUE = includes, FALSE = excludes
-     *
-     * @return bool Returns true if $value matches one or more conditions, FALSE otherwise
-     */
-    protected function isValueConditional($value, $include = true)
-    {
-        //  No conditions, we're done.
-        if (null === ($_conditions = ($include ? $this->_ieIncludeConditions : $this->_ieExcludeConditions))) {
-            return false;
-        }
-
-        //  Call each of the closures registered. They return true if matched
-        foreach (array_flatten($_conditions) as $_callback) {
-            if ($_callback($value)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Check only if $value is included/excluded
      *
      * @param string $value
@@ -327,6 +382,7 @@ trait IncludeExclude
      */
     protected function _ieCheckValue($value, $include = true)
     {
+        //  Conditions?
         $_check = $include ? $this->_ieInclude : $this->_ieExclude;
 
         if (static::inArray($value, $_check, $this->_ieCaseSensitive)) {
