@@ -37,6 +37,10 @@ trait IncludeExclude
      * @var string The reason for the last exclusion
      */
     private $_ieExcludeReason;
+    /**
+     * @var array The supported conditionals
+     */
+    private $_ieConditionals = ['starts-with', 'ends-with', 'contains'];
 
     //******************************************************************************
     //* Methods
@@ -84,37 +88,6 @@ trait IncludeExclude
     }
 
     /**
-     * Parses conditionals and returns an array of closure handlers
-     *
-     * @param array $array
-     *
-     * @return array
-     */
-    protected static function parseConditions(&$array = [])
-    {
-        $_conditions = [];
-
-        foreach ($array as $_key => $_needle) {
-            if (!is_string($_key) && is_numeric($_key)) {
-                continue;
-            }
-
-            switch ($_key) {
-                case 'starts-with':
-                case 'ends-with':
-                case 'contains':
-                    $_conditions[$_key][] = $_needle;
-                    break;
-
-                // default:
-                //     throw new \RuntimeException('Invalid condition "' . $_key . '" found');
-            }
-        }
-
-        return $_conditions;
-    }
-
-    /**
      * @param string $value
      * @param bool   $include TRUE = includes, FALSE = excludes
      *
@@ -122,37 +95,28 @@ trait IncludeExclude
      */
     protected function isValueConditional($value, $include = true)
     {
-        //  JIT/Late-bound initialization
-        if (null === $this->_ieIncludeConditions || null === $this->_ieExcludeConditions) {
-            $this->_ieIncludeConditions = static::parseConditions($this->_ieInclude);
-            $this->_ieExcludeConditions = static::parseConditions($this->_ieExclude);
-        }
+        //  Get conditions, if none, no match
+        if (false !== ($_conditions = $this->getIncludeExcludeConditions($include))) {
+            foreach ($_conditions as $_type => $_needles) {
+                switch ($_type) {
+                    case 'starts-with':
+                        if ($this->conditionStartsWith($value, $_needles)) {
+                            return true;
+                        }
+                        break;
 
-        //  No conditions, we're done.
-        if (null === ($_conditions = ($include ? $this->_ieIncludeConditions : $this->_ieExcludeConditions)) || empty($_conditions)) {
-            return false;
-        }
+                    case 'ends-with':
+                        if ($this->conditionEndsWith($value, $_needles)) {
+                            return true;
+                        }
+                        break;
 
-        //  Call each of the closures registered. They return true if matched
-        foreach ($_conditions as $_type => $_needles) {
-            switch ($_type) {
-                case 'starts-with':
-                    if (starts_with($value, $_needles)) {
-                        return true;
-                    }
-                    break;
-
-                case 'ends-with':
-                    if (ends_with($value, $_needles)) {
-                        return true;
-                    }
-                    break;
-
-                case 'contains':
-                    if (str_contains($value, $_needles)) {
-                        return true;
-                    }
-                    break;
+                    case 'contains':
+                        if ($this->conditionContains($value, $_needles)) {
+                            return true;
+                        }
+                        break;
+                }
             }
         }
 
@@ -406,5 +370,52 @@ trait IncludeExclude
         }
 
         return false;
+    }
+
+    /**
+     * @param bool $include If true, include conditions are returned, otherwise exclude conditions
+     *
+     * @return array|bool
+     */
+    protected function getIncludeExcludeConditions($include = true)
+    {
+        if (null === $this->_ieIncludeConditions && !empty($this->_ieInclude)) {
+            $this->_ieIncludeConditions = $this->parseConditions($this->_ieInclude);
+        }
+
+        if (null === $this->_ieExcludeConditions && !empty($this->_ieExclude)) {
+            $this->_ieExcludeConditions = $this->parseConditions($this->_ieExclude);
+        }
+
+        $_conditions = $include ? $this->_ieIncludeConditions : $this->_ieExcludeConditions;
+
+        return empty($_conditions) ? false : $_conditions;
+    }
+
+    /**
+     * Parses conditionals and returns an array of closure handlers
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    protected function parseConditions(&$array = [])
+    {
+        $_conditions = [];
+
+        //  If we have supported conditionals, add them to the conditions
+        foreach ($array as $_key => $_needle) {
+            if (is_string($_key) && in_array($_key, $this->_ieConditionals)) {
+                if (!is_array($_needle)) {
+                    $_needle = [$_needle];
+                }
+
+                foreach ($_needle as $_thing) {
+                    $_conditions[$_key][] = $_thing;
+                }
+            }
+        }
+
+        return $_conditions;
     }
 }
