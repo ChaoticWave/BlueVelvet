@@ -2,6 +2,7 @@
 
 /**
  * Include/exclude objects that are on/not on a list
+ * New conditions may be added by defining a new conditionType method and adding it to $_ieConditionals
  */
 trait IncludeExclude
 {
@@ -41,6 +42,10 @@ trait IncludeExclude
      * @var array The supported conditionals
      */
     private $_ieConditionals = ['starts-with', 'ends-with', 'contains'];
+    /**
+     * @var array A cache of handled conditions
+     */
+    private $_ieConditionCache;
 
     //******************************************************************************
     //* Methods
@@ -70,24 +75,6 @@ trait IncludeExclude
     }
 
     /**
-     * @param array|null  $includes
-     * @param array|null  $excludes
-     * @param string|null $wildcard
-     *
-     * @return \ChaoticWave\BlueVelvet\Traits\IncludeExclude
-     */
-    protected function setupIncludeExclude($includes = null, $excludes = null, $wildcard = null)
-    {
-        $this->_ieWildCharacter = $wildcard ?: '*';
-
-        //  Load 'em up!
-        $this->_ieInclude = $includes;
-        $this->_ieExclude = $excludes;
-
-        return $this;
-    }
-
-    /**
      * @param string $value
      * @param bool   $include TRUE = includes, FALSE = excludes
      *
@@ -95,27 +82,18 @@ trait IncludeExclude
      */
     protected function isValueConditional($value, $include = true)
     {
+        //  Only handle scalar in here
+        if (!is_scalar($value)) {
+            return false;
+        }
+
         //  Get conditions, if none, no match
         if (false !== ($_conditions = $this->getIncludeExcludeConditions($include))) {
             foreach ($_conditions as $_type => $_needles) {
-                switch ($_type) {
-                    case 'starts-with':
-                        if ($this->conditionStartsWith($value, $_needles)) {
-                            return true;
-                        }
-                        break;
-
-                    case 'ends-with':
-                        if ($this->conditionEndsWith($value, $_needles)) {
-                            return true;
-                        }
-                        break;
-
-                    case 'contains':
-                        if ($this->conditionContains($value, $_needles)) {
-                            return true;
-                        }
-                        break;
+                if (method_exists($this, $_method = 'condition' . studly_case($_type))) {
+                    if (call_user_func([$this, $_method], $value, $_needles)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -124,51 +102,36 @@ trait IncludeExclude
     }
 
     /**
-     * Caching conditional processor: contains
+     * Test if a wildcard is defined in the in/exclusions
      *
-     * @param string       $haystack
-     * @param string|array $needles
+     * @param bool $included TRUE = includes, FALSE = excludes
      *
      * @return bool
      */
-    protected function conditionContains($haystack, $needles)
+    protected function isWildcardDefined($included = true)
     {
-        static $cache = [];
-        $_cacheKey = md5(json_encode(['contains' => [$haystack, $needles]]));
+        $_check = $included ? $this->_ieInclude : $this->_ieExclude;
 
-        return $cache[$_cacheKey] = array_get($cache, $_cacheKey) ?: str_contains($haystack, $needles);
+        return $this->_ieWildCharacter === $_check || static::inArray($this->_ieWildCharacter, $_check, $this->_ieCaseSensitive);
     }
 
     /**
-     * Caching conditional processor: starts-with
+     * @param array|null  $includes
+     * @param array|null  $excludes
+     * @param string|null $wildcard
      *
-     * @param string       $haystack
-     * @param string|array $needles
-     *
-     * @return bool
+     * @return \ChaoticWave\BlueVelvet\Traits\IncludeExclude
      */
-    protected function conditionStartsWith($haystack, $needles)
+    protected function setupIncludeExclude($includes = null, $excludes = null, $wildcard = null)
     {
-        static $cache = [];
-        $_cacheKey = md5(json_encode(['starts-with' => [$haystack, $needles]]));
+        $this->_ieConditionCache = [];
+        $this->_ieWildCharacter = $wildcard ?: '*';
 
-        return $cache[$_cacheKey] = array_get($cache, $_cacheKey) ?: starts_with($haystack, $needles);
-    }
+        //  Load 'em up!
+        $this->_ieInclude = $includes;
+        $this->_ieExclude = $excludes;
 
-    /**
-     * Caching conditional processor: ends-with
-     *
-     * @param string       $haystack
-     * @param string|array $needles
-     *
-     * @return bool
-     */
-    protected function conditionEndsWith($haystack, $needles)
-    {
-        static $cache = [];
-        $_cacheKey = md5(json_encode(['ends-with' => [$haystack, $needles]]));
-
-        return $cache[$_cacheKey] = array_get($cache, $_cacheKey) ?: ends_with($haystack, $needles);
+        return $this;
     }
 
     /**
@@ -323,20 +286,6 @@ trait IncludeExclude
     }
 
     /**
-     * Test if a wildcard is defined in the in/exclusions
-     *
-     * @param bool $included TRUE = includes, FALSE = excludes
-     *
-     * @return bool
-     */
-    protected function isWildcardDefined($included = true)
-    {
-        $_check = $included ? $this->_ieInclude : $this->_ieExclude;
-
-        return $this->_ieWildCharacter === $_check || static::inArray($this->_ieWildCharacter, $_check, $this->_ieCaseSensitive);
-    }
-
-    /**
      * Check only if $value is included/excluded
      *
      * @param string $value
@@ -373,6 +322,8 @@ trait IncludeExclude
     }
 
     /**
+     * Returns the include/exclude conditions, initializing them if they haven't been.
+     *
      * @param bool $include If true, include conditions are returned, otherwise exclude conditions
      *
      * @return array|bool
@@ -391,6 +342,10 @@ trait IncludeExclude
 
         return empty($_conditions) ? false : $_conditions;
     }
+
+    //******************************************************************************
+    //* Methods for Conditional Handling
+    //******************************************************************************
 
     /**
      * Parses conditionals and returns an array of closure handlers
@@ -417,5 +372,85 @@ trait IncludeExclude
         }
 
         return $_conditions;
+    }
+
+    /**
+     * Caching conditional processor: contains
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    protected function conditionContains($haystack, $needles)
+    {
+        if (!$this->getCachedCondition('contains', [$haystack, $needles])) {
+            return $this->putCachedCondition('contains', [$haystack, $needles], str_contains($haystack, $needles));
+        }
+
+        return true;
+    }
+
+    /**
+     * Caching conditional processor: starts-with
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    protected function conditionStartsWith($haystack, $needles)
+    {
+        if (!$this->getCachedCondition('starts-with', [$haystack, $needles])) {
+            return $this->putCachedCondition('starts-with', [$haystack, $needles], starts_with($haystack, $needles));
+        }
+
+        return true;
+    }
+
+    /**
+     * Caching conditional processor: ends-with
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    protected function conditionEndsWith($haystack, $needles)
+    {
+        if (!$this->getCachedCondition('ends-with', [$haystack, $needles])) {
+            return $this->putCachedCondition('ends-with', [$haystack, $needles], ends_with($haystack, $needles));
+        }
+
+        return true;
+    }
+
+    /**
+     * Hashes and stores a conditional result
+     *
+     * @param string $tag The method or condition name
+     * @param array  $key The payload cached
+     *
+     * @return mixed
+     */
+    protected function getCachedCondition($tag, $key)
+    {
+        return array_get($this->_ieConditionCache, md5(json_encode([$tag => $key])), false);
+    }
+
+    /**
+     * Retrieves a cached conditional result
+     *
+     * @param string $tag The method or condition name
+     * @param array  $key The payload cached
+     * @param mixed  $value
+     *
+     * @return mixed|null Returns $value unmodified for returning
+     */
+    protected function putCachedCondition($tag, $key, $value = null)
+    {
+        $this->_ieConditionCache[md5(json_encode([$tag => $key]))] = $value;
+
+        return $value;
     }
 }
