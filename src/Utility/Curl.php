@@ -82,7 +82,11 @@ class Curl extends Verbs
      */
     public static function get($url, $query = [], $curlOptions = [])
     {
-        return static::_httpRequest(static::GET, Uri::addUrlParameter($url, $query), [], $curlOptions);
+        if (!empty($query)) {
+            $url = Uri::addUrlParameter($url, $query);
+        }
+
+        return static::_httpRequest(static::GET, $url, [], $curlOptions);
     }
 
     /**
@@ -209,7 +213,7 @@ class Curl extends Verbs
             throw new \InvalidArgumentException('Invalid method "' . $method . '" specified.');
         }
 
-        if (static::$sendJson && is_array($payload) && static::POST != $method) {
+        if (static::$sendJson && is_array($payload) && !empty($payload) && static::POST != $method) {
             $payload = json_encode($payload);
         }
 
@@ -337,8 +341,7 @@ class Curl extends Verbs
                             $_parts = explode(':', $_line, 2);
 
                             if (!empty($_parts)) {
-                                static::$lastResponseHeaders[trim($_parts[0])] =
-                                    count($_parts) > 1 ? trim($_parts[1]) : null;
+                                static::$lastResponseHeaders[trim($_parts[0])] = count($_parts) > 1 ? trim($_parts[1]) : null;
                             }
                         }
                     }
@@ -592,16 +595,7 @@ class Curl extends Verbs
             $_port = null;
         }
 
-        $_currentUrl =
-            $_protocol . $_host . $_port .
-            (true === $includePath
-                ? array_get($_parts, 'path')
-                : null
-            ) .
-            (true === $includeQuery
-                ? $_query
-                : null
-            );
+        $_currentUrl = $_protocol . $_host . $_port . (true === $includePath ? array_get($_parts, 'path') : null) . (true === $includeQuery ? $_query : null);
 
         return $_currentUrl;
     }
