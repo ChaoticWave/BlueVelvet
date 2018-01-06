@@ -27,7 +27,9 @@ abstract class BaseServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //  Does nothing but encourage calling the parent method
+        if (is_callable('parent::boot')) {
+            parent::boot();
+        }
     }
 
     /**
