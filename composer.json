@@ -22,7 +22,7 @@
         "graham-campbell/flysystem":   "^3.0",
         "friendsofphp/php-cs-fixer":   "2.*",
         "vlucas/phpdotenv":            "~2.2",
-        "laravel/lumen-framework":     "5.2.*|5.3.*",
+        "laravel/lumen-framework":     "5.2.*|5.3.*|5.4.*|5.5.*",
         "fzaninotto/faker":            "~1.4",
         "phpunit/phpunit":             "~4.0"
     },
