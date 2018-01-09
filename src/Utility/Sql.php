@@ -156,7 +156,11 @@ class Sql
             $connection = \DB::connection($connection);
             $_db = $connection->getPdo();
         } elseif (static::$connection) {
-            $_db = static::$connection->getPdo();
+            if (static::$connection instanceof \PDO) {
+                $_db = static::$connection;
+            } else {
+                $_db = static::$connection->getPdo();
+            }
         }
 
         //	Connect etc...
