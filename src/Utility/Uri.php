@@ -195,4 +195,26 @@ class Uri
 
         return $_result;
     }
+
+    /**
+     * Given an array or a string; converts and returns as an uniform array or a string for use in a query string
+     *
+     * @param string|array $value     The value
+     * @param bool         $toString  Return as string for query string use
+     * @param string       $delimiter The delimiter between entries if returning a string
+     *
+     * @return mixed
+     */
+    public static function urlize($value, $toString = false, $delimiter = ',')
+    {
+        if (is_array($value)) {
+            $_data = $value;
+        } elseif (is_string($value)) {
+            $_data = explode($delimiter, $value);
+        } else {
+            $_data = [];
+        }
+
+        return $toString ? implode($delimiter, $_data) : $_data;
+    }
 }
