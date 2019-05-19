@@ -47,10 +47,10 @@ trait ConsoleHelper
         $_copyright = config('app.copyright');
 
         if ($_name && $_version) {
-            $this->output->writeln($this->context($_name, 'info') . ' (' . $this->context($_version, 'comment') . ')');
+			$this->output->writeln($this->wrapContent($_name, 'info') . ' (' . $this->wrapContent($_version, 'comment') . ')');
 
             if (!empty($_copyright)) {
-                $this->output->writeln($this->context($_copyright, 'info') . ($newline ? PHP_EOL : null));
+				$this->output->writeln($this->wrapContent($_copyright, 'info') . ($newline ? PHP_EOL : null));
             }
         }
 
@@ -86,7 +86,7 @@ trait ConsoleHelper
      *
      * @return string
      */
-    protected function context($content, $tag)
+	protected function wrapContent($content, $tag)
     {
         return '<' . $tag . '>' . $content . '</' . $tag . '>';
     }
@@ -101,7 +101,7 @@ trait ConsoleHelper
      */
     protected function concat($text, $context = null)
     {
-        $this->_hccLineBuffer .= ($context ? $this->context($text, $context) : $text);
+		$this->_hccLineBuffer .= ($context ? $this->wrapContent($text, $context) : $text);
 
         return $this;
     }
@@ -190,7 +190,7 @@ trait ConsoleHelper
         }
 
         foreach ($_data as $_message) {
-            $context && ($_message = $this->context(trim($_message), $context));
+			$context && ($_message = $this->wrapContent(trim($_message), $context));
             $_scrubbed[] = ($prefix && $this->_hccOutputPrefix ? $this->_hccOutputPrefix : null) . $_message;
         }
 
