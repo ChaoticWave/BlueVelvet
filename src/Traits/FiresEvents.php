@@ -1,6 +1,6 @@
 <?php namespace ChaoticWave\BlueVelvet\Traits;
 
-use ChaoticWave\BlueVelvent\Events\GenericEvent;
+use ChaoticWave\BlueVelvet\Events\GenericEvent;
 use Exception;
 use Illuminate\Support\Str;
 
