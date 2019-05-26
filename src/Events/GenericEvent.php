@@ -1,6 +1,6 @@
 <?php
 
-namespace ChaoticWave\BlueVelvent\Events;
+namespace ChaoticWave\BlueVelvet\Events;
 
 use Illuminate\Queue\SerializesModels;
 
