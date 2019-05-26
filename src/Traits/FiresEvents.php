@@ -1,6 +1,8 @@
 <?php namespace ChaoticWave\BlueVelvet\Traits;
 
-use ChaoticWave\BlueVelvet\Exceptions\HaltPropagationException;
+use ChaoticWave\BlueVelvent\Events\GenericEvent;
+use Exception;
+use Illuminate\Support\Str;
 
 /**
  * Adds an event firing method
@@ -39,7 +41,7 @@ trait FiresEvents
             }
         }
 
-        $_module = snake_case(str_ireplace([$name, 'Service', 'Provider'], null, $_class));
+		$_module = Str::snake(str_ireplace([$name, 'Service', 'Provider'], null, $_class));
 
         return $this->setEventPrefix(implode('.', [$name, $_module]));
     }
@@ -49,22 +51,18 @@ trait FiresEvents
      *
      * @param string $name    The event name
      * @param array  $payload The payload
-     * @param bool   $halt    Halt event propagation after first handler and return response.
      *
      * @return array|null|boolean
      */
-    protected function fireEvent($name, $payload = [], $halt = false)
+	protected function fireEvent($name, $payload = [])
     {
         try {
-            $_service = app('events');
-
             if (!empty($this->__fePrefix)) {
                 $name = trim($this->__fePrefix, ' .') . '.' . ltrim($name, ' .');
             }
 
-            //  Wrap the payload for passing through call_user_func_array
-            return $_service->fire($name, [$payload], $halt);
-        } catch (HaltPropagationException $_ex) {
+			return event(new GenericEvent($name, $payload));
+		} catch (Exception $_ex) {
             //  Return false on this exception to halt propagation
             return false;
         }
@@ -78,7 +76,6 @@ trait FiresEvents
     protected function setEventPrefix($prefix)
     {
         $this->__fePrefix = $prefix;
-
         return $this;
     }
 }

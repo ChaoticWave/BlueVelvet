@@ -1,10 +1,7 @@
 <?php namespace ChaoticWave\BlueVelvet\Services;
 
 use ChaoticWave\BlueVelvet\Contracts\Bootable;
-use ChaoticWave\BlueVelvet\Contracts\ServiceLike;
 use ChaoticWave\BlueVelvet\Traits\FiresEvents;
-use ChaoticWave\BlueVelvet\Traits\HasApplication;
-use ChaoticWave\BlueVelvet\Traits\HasAppLogger;
 
 /**
  * A base class for bootable services
